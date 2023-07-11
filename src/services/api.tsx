@@ -8,7 +8,7 @@ export const generateAccessToken = () => {
     {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: `Basic ${btoa(
-        `${process.env.REACT_APP_API_CLIENT_ID}:${process.env.REACT_APP_API_CLIENT_SECRET}`
+        `${process.env.REACT_APP_CLIENT_ID}:${process.env.REACT_APP_CLIENT_SECRET}`
       )}`,
     }
   );
