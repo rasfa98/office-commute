@@ -54,7 +54,7 @@ function App() {
   return (
     <div className="container">
       {departures.map((departure) => (
-        <Departure departure={departure} />
+        <Departure key={departure.detailsReference} departure={departure} />
       ))}
     </div>
   );
