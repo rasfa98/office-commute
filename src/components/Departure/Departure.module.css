@@ -1,0 +1,12 @@
+.departure {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  background: white;
+  padding: var(--spacing);
+  border-radius: var(--border-radius);
+}
+
+.departure b {
+  margin-left: auto;
+}

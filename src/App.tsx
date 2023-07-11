@@ -1,24 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import Departure from "./components/Departure";
+import { generateAccessToken, getDepartures } from "./services/api";
+import { API } from "./services/types";
+import {
+  getExpirationDate,
+  getStoredTokenData,
+  isTokenExpired,
+} from "./utils/token";
+
+import "./App.css";
 
 function App() {
+  const [departures, setDepartures] = useState<API.Departure[]>([]);
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const getOrCreateToken = async () => {
+      const storedTokenData = getStoredTokenData();
+
+      if (storedTokenData && !isTokenExpired(storedTokenData.expires)) {
+        return storedTokenData.token;
+      }
+
+      const newTokenData = await generateAccessToken();
+      const newToken = newTokenData.access_token;
+
+      localStorage.setItem(
+        "token",
+        JSON.stringify({
+          token: newToken,
+          expires: getExpirationDate(newTokenData.expires_in),
+        })
+      );
+
+      return newToken;
+    };
+
+    getOrCreateToken().then((token) => setToken(token));
+  }, []);
+
+  useEffect(() => {
+    const fetchDepartures = async () => {
+      const departures = await getDepartures(token);
+
+      setDepartures(departures.results);
+    };
+
+    if (token) {
+      fetchDepartures();
+    }
+  }, [token]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      {departures.map((departure) => (
+        <Departure departure={departure} />
+      ))}
     </div>
   );
 }
