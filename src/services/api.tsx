@@ -14,11 +14,15 @@ export const generateAccessToken = () => {
   );
 };
 
-export const getJourneys = async (token: string, reversed?: boolean) => {
+export const getJourneys = async (
+  token: string,
+  reversed?: boolean,
+  limit = 4
+) => {
   return getRequest<API.JourneysResponse>(
     reversed
-      ? `/pr/v4/journeys?&originGid=${process.env.REACT_APP_DESTINATION_ID}&destinationGid=${process.env.REACT_APP_ORIGIN_ID}&limit=4`
-      : `/pr/v4/journeys?&originGid=${process.env.REACT_APP_ORIGIN_ID}&destinationGid=${process.env.REACT_APP_DESTINATION_ID}&limit=4`,
+      ? `/pr/v4/journeys?&originGid=${process.env.REACT_APP_DESTINATION_ID}&destinationGid=${process.env.REACT_APP_ORIGIN_ID}&limit=${limit}`
+      : `/pr/v4/journeys?&originGid=${process.env.REACT_APP_ORIGIN_ID}&destinationGid=${process.env.REACT_APP_DESTINATION_ID}&limit=${limit}`,
     {
       Authorization: `Bearer ${token}`,
     }

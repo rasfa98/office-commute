@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Journey from "./components/Journey";
 import { generateAccessToken, getJourneys } from "./services/api";
 import { API } from "./services/types";
+import { NUMBER_OF_JOURNEYS } from "./utils/constants";
 import {
   getExpirationDate,
   getStoredTokenData,
@@ -12,7 +13,7 @@ import "./App.css";
 
 function App() {
   const [reversed, setReversed] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [journeys, setJourneys] = useState<API.Journey[]>([]);
   const [token, setToken] = useState("");
 
@@ -38,17 +39,20 @@ function App() {
       return newToken;
     };
 
+    setIsLoading(true);
     getOrCreateToken().then((token) => setToken(token));
   }, []);
 
   useEffect(() => {
     const fetchJourneys = async () => {
-      const journeys = await getJourneys(token, reversed);
+      const journeys = await getJourneys(token, reversed, NUMBER_OF_JOURNEYS);
 
       setJourneys(journeys.results);
+      setIsLoading(false);
     };
 
     if (token) {
+      setIsLoading(true);
       fetchJourneys();
     }
   }, [token, reversed]);
@@ -56,18 +60,26 @@ function App() {
   return (
     <div className="App">
       <div className="journeys">
-        {journeys.map((journey) => (
-          <Journey
-            key={journey.detailsReference}
-            line={journey.tripLegs[0].serviceJourney.line}
-            label={journey.tripLegs[0].serviceJourney.direction}
-            platform={journey.tripLegs[0].origin.stopPoint.platform}
-            departureTime={
-              journey.tripLegs[0].estimatedOtherwisePlannedDepartureTime
-            }
-            isCanceled={journey.tripLegs[0].isCancelled}
-          />
-        ))}
+        {isLoading
+          ? new Array(NUMBER_OF_JOURNEYS)
+              .fill(null)
+              .map((_, index) => <Journey.Skeleton key={index} />)
+          : journeys.map((journey) => {
+              const departure = journey.tripLegs[0];
+
+              return (
+                <Journey
+                  key={journey.detailsReference}
+                  line={departure.serviceJourney.line}
+                  label={departure.serviceJourney.direction}
+                  platform={departure.origin.stopPoint.platform}
+                  departureTime={
+                    departure.estimatedOtherwisePlannedDepartureTime
+                  }
+                  isCanceled={departure.isCancelled}
+                />
+              );
+            })}
       </div>
       <button onClick={() => setReversed(!reversed)}>
         {reversed ? (

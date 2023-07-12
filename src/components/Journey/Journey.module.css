@@ -5,6 +5,7 @@
   background: white;
   padding: var(--spacing);
   border-radius: var(--border-radius);
+  min-height: 65px;
 }
 
 .journey b {

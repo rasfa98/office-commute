@@ -1,6 +1,7 @@
 import { API } from "../../services/types";
 import { getDifferenceInMinutes } from "../../utils/date";
 import LineNumber from "../LineNumber";
+import Skeleton from "../Skeleton";
 import styles from "./Journey.module.css";
 
 const Journey = ({
@@ -29,9 +30,17 @@ const Journey = ({
         {isCanceled
           ? "INSTÄLLD"
           : timeUntilDeparture > 0
-          ? `${timeUntilDeparture} min`
+          ? `${timeUntilDeparture} MIN`
           : `NU`}
       </b>
+    </div>
+  );
+};
+
+Journey.Skeleton = () => {
+  return (
+    <div className={styles.journey}>
+      <Skeleton />
     </div>
   );
 };
