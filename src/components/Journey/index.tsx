@@ -13,7 +13,7 @@ const Journey = ({
   departureTime: string;
   label: string;
   line: API.Line;
-  platform: string;
+  platform?: string;
   isCanceled: boolean;
 }) => {
   const timeUntilDeparture = getDifferenceInMinutes(
@@ -24,7 +24,7 @@ const Journey = ({
   return (
     <div className={styles.journey}>
       <LineNumber line={line} />
-      {label} ({platform})
+      {label} {platform && `(${platform})`}
       <b>
         {isCanceled
           ? "INSTÄLLD"

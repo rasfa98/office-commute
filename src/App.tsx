@@ -11,24 +11,10 @@ import {
 import "./App.css";
 
 function App() {
-  const [position, setPosition] = useState<API.Position>();
+  const [reversed, setReversed] = useState(false);
+
   const [journeys, setJourneys] = useState<API.Journey[]>([]);
   const [token, setToken] = useState("");
-
-  useEffect(() => {
-    const getUserPosition = () => {
-      navigator.geolocation.getCurrentPosition(
-        (data: GeolocationPosition) =>
-          setPosition({
-            latitude: data.coords.latitude,
-            longitude: data.coords.longitude,
-          }),
-        (err) => console.log(err)
-      );
-    };
-
-    getUserPosition();
-  }, []);
 
   useEffect(() => {
     const getOrCreateToken = async () => {
@@ -57,30 +43,39 @@ function App() {
 
   useEffect(() => {
     const fetchJourneys = async () => {
-      const journeys = await getJourneys(token, position!);
+      const journeys = await getJourneys(token, reversed);
 
       setJourneys(journeys.results);
     };
 
-    if (token && position) {
+    if (token) {
       fetchJourneys();
     }
-  }, [token, position]);
+  }, [token, reversed]);
 
   return (
-    <div className="container">
-      {journeys.map((journey) => (
-        <Journey
-          key={journey.detailsReference}
-          line={journey.tripLegs[0].serviceJourney.line}
-          label={journey.tripLegs[0].origin.stopPoint.name}
-          platform={journey.tripLegs[0].origin.stopPoint.platform}
-          departureTime={
-            journey.tripLegs[0].estimatedOtherwisePlannedDepartureTime
-          }
-          isCanceled={journey.tripLegs[0].isCancelled}
-        />
-      ))}
+    <div className="App">
+      <div className="journeys">
+        {journeys.map((journey) => (
+          <Journey
+            key={journey.detailsReference}
+            line={journey.tripLegs[0].serviceJourney.line}
+            label={journey.tripLegs[0].serviceJourney.direction}
+            platform={journey.tripLegs[0].origin.stopPoint.platform}
+            departureTime={
+              journey.tripLegs[0].estimatedOtherwisePlannedDepartureTime
+            }
+            isCanceled={journey.tripLegs[0].isCancelled}
+          />
+        ))}
+      </div>
+      <button onClick={() => setReversed(!reversed)}>
+        {reversed ? (
+          <span>Let's get to work! &#128170;</span>
+        ) : (
+          <span>I wanna go home &#128526;</span>
+        )}
+      </button>
     </div>
   );
 }

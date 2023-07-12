@@ -23,19 +23,14 @@ export namespace API {
       estimatedOtherwisePlannedDepartureTime: string;
       origin: {
         stopPoint: {
-          name: string;
           platform: string;
         };
       };
       serviceJourney: {
+        direction: string;
         line: Line;
       };
     }[];
-  };
-
-  export type Position = {
-    latitude: number;
-    longitude: number;
   };
 
   export type JourneysResponse = {

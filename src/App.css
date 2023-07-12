@@ -10,7 +10,9 @@
 }
 
 html,
-body {
+body,
+#root,
+.App {
   height: 100%;
 }
 
@@ -21,12 +23,29 @@ body {
   animation: gradient 15s ease infinite;
 }
 
-.container {
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing);
+}
+
+.journeys {
   display: flex;
   flex-direction: column;
   gap: var(--spacing);
+  width: 100%;
   max-width: 400px;
-  margin: 0 auto;
+}
+
+button {
+  cursor: pointer;
+  background: white;
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.2rem;
 }
 
 @keyframes gradient {
