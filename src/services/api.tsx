@@ -14,9 +14,9 @@ export const generateAccessToken = () => {
   );
 };
 
-export const getDepartures = async (token: string) => {
-  return getRequest<API.DeparturesResponse>(
-    `/pr/v4/stop-areas/${process.env.REACT_APP_STOP_AREA_ID}/departures?platforms=A`,
+export const getJourneys = async (token: string, position: API.Position) => {
+  return getRequest<API.JourneysResponse>(
+    `/pr/v4/journeys?originLatitude=${position.latitude}&originLongitude=${position.longitude}&destinationGid=${process.env.REACT_APP_DESTINATION_ID}&transportModes=tram&limit=10`,
     {
       Authorization: `Bearer ${token}`,
     }

@@ -1,6 +1,6 @@
 .lineNumber {
   text-align: center;
-  width: 25px;
+  padding: 0 5px;
   border: 1px solid;
   border-radius: var(--border-radius);
 }

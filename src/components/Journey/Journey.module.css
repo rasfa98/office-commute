@@ -1,4 +1,4 @@
-.departure {
+.journey {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 2);
@@ -7,6 +7,6 @@
   border-radius: var(--border-radius);
 }
 
-.departure b {
+.journey b {
   margin-left: auto;
 }

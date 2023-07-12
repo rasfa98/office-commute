@@ -11,7 +11,7 @@ const LineNumber = ({ line }: { line: API.Line }) => {
         borderColor: line.borderColor,
       }}
     >
-      {line.shortName}
+      {line.designation}
     </div>
   );
 };

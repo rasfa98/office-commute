@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Departure from "./components/Departure";
-import { generateAccessToken, getDepartures } from "./services/api";
+import Journey from "./components/Journey";
+import { generateAccessToken, getJourneys } from "./services/api";
 import { API } from "./services/types";
 import {
   getExpirationDate,
@@ -11,8 +11,24 @@ import {
 import "./App.css";
 
 function App() {
-  const [departures, setDepartures] = useState<API.Departure[]>([]);
+  const [position, setPosition] = useState<API.Position>();
+  const [journeys, setJourneys] = useState<API.Journey[]>([]);
   const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const getUserPosition = () => {
+      navigator.geolocation.getCurrentPosition(
+        (data: GeolocationPosition) =>
+          setPosition({
+            latitude: data.coords.latitude,
+            longitude: data.coords.longitude,
+          }),
+        (err) => console.log(err)
+      );
+    };
+
+    getUserPosition();
+  }, []);
 
   useEffect(() => {
     const getOrCreateToken = async () => {
@@ -40,21 +56,30 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const fetchDepartures = async () => {
-      const departures = await getDepartures(token);
+    const fetchJourneys = async () => {
+      const journeys = await getJourneys(token, position!);
 
-      setDepartures(departures.results);
+      setJourneys(journeys.results);
     };
 
-    if (token) {
-      fetchDepartures();
+    if (token && position) {
+      fetchJourneys();
     }
-  }, [token]);
+  }, [token, position]);
 
   return (
     <div className="container">
-      {departures.map((departure) => (
-        <Departure key={departure.detailsReference} departure={departure} />
+      {journeys.map((journey) => (
+        <Journey
+          key={journey.detailsReference}
+          line={journey.tripLegs[0].serviceJourney.line}
+          label={journey.tripLegs[0].origin.stopPoint.name}
+          platform={journey.tripLegs[0].origin.stopPoint.platform}
+          departureTime={
+            journey.tripLegs[0].estimatedOtherwisePlannedDepartureTime
+          }
+          isCanceled={journey.tripLegs[0].isCancelled}
+        />
       ))}
     </div>
   );
