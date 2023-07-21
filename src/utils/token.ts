@@ -1,7 +1,7 @@
 import { API } from "../services/types";
 
 export const isTokenExpired = (expirationDate: Date) => {
-  return new Date() >= expirationDate;
+  return new Date() >= new Date(expirationDate);
 };
 
 export const getExpirationDate = (expiresIn: number) => {
